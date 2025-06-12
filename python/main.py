@@ -157,6 +157,12 @@ def add_alias_to_file(alias_name, command):
         print("Restart terminal to enable auto-reload")
 
 
+def add_prompt_alias(alias_name, prompt):
+    """Handle prompt-based alias creation (placeholder for LLM integration)"""
+    print(f"Prompt alias '{alias_name}': {prompt}")
+    print("Not implemented yet")
+
+
 def remove_alias_from_file(alias_name):
     """Remove an alias from the aliases file"""
     aliases_file = get_aliases_file()
@@ -237,49 +243,60 @@ def parse_command(args):
         
         return "remove", alias_name, None
     
-    if len(args) < 5:
-        print("Usage: lhs alias <name> does <command>")
-        print("       lhs list")
-        print("       lhs remove <alias>")
-        sys.exit(1)
+    if args[1] == "alias":
+        if len(args) < 5:
+            print("Usage: lhs alias <name> does <command>")
+            print("       lhs alias <name> prompt <description>")
+            print("       lhs list")
+            print("       lhs remove <alias>")
+            sys.exit(1)
+        
+        alias_name = args[2]
+        action_word = args[3]
+        content = args[4]
+        
+        # Remove quotes if present
+        if alias_name.startswith('"') and alias_name.endswith('"'):
+            alias_name = alias_name[1:-1]
+        if content.startswith('"') and content.endswith('"'):
+            content = content[1:-1]
+        
+        if action_word == "does":
+            return "alias", alias_name, content
+        elif action_word == "prompt":
+            return "prompt", alias_name, content
+        else:
+            print("Error: Third argument must be 'does' or 'prompt'")
+            print("Usage: lhs alias <name> does <command>")
+            print("       lhs alias <name> prompt <description>")
+            sys.exit(1)
     
-    if args[1] != "alias":
-        print("Usage: lhs alias <name> does <command>")
-        print("       lhs list")
-        print("       lhs remove <alias>")
-        sys.exit(1)
-    
-    if args[3] != "does":
-        print("Usage: lhs alias <name> does <command>")
-        sys.exit(1)
-    
-    alias_name = args[2]
-    command = args[4]
-    
-    # Remove quotes if present
-    if alias_name.startswith('"') and alias_name.endswith('"'):
-        alias_name = alias_name[1:-1]
-    if command.startswith('"') and command.endswith('"'):
-        command = command[1:-1]
-    
-    return "alias", alias_name, command
+    # If we get here, invalid command
+    print("Usage: lhs alias <name> does <command>")
+    print("       lhs alias <name> prompt <description>")
+    print("       lhs list")
+    print("       lhs remove <alias>")
+    sys.exit(1)
 
 
 def main():
     """Main function"""
     if len(sys.argv) < 2:
         print("Usage: lhs alias <name> does <command>")
+        print("       lhs alias <name> prompt <description>")
         print("       lhs list")
         print("       lhs remove <alias>")
         sys.exit(1)
     
     try:
-        action, alias_name, command = parse_command(sys.argv)
+        action, alias_name, content = parse_command(sys.argv)
         
         if action == "list":
             list_aliases()
         elif action == "alias":
-            add_alias_to_file(alias_name, command)
+            add_alias_to_file(alias_name, content)
+        elif action == "prompt":
+            add_prompt_alias(alias_name, content)
         elif action == "remove":
             remove_alias_from_file(alias_name)
         else:
