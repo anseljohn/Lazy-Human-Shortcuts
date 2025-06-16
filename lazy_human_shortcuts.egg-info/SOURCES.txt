@@ -1,0 +1,12 @@
+setup.py
+lazy_human_shortcuts.egg-info/PKG-INFO
+lazy_human_shortcuts.egg-info/SOURCES.txt
+lazy_human_shortcuts.egg-info/dependency_links.txt
+lazy_human_shortcuts.egg-info/entry_points.txt
+lazy_human_shortcuts.egg-info/requires.txt
+lazy_human_shortcuts.egg-info/top_level.txt
+lhs/__init__.py
+lhs/alias.py
+lhs/main.py
+lhs/paths.py
+lhs/semantics.py
