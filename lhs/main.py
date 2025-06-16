@@ -47,8 +47,6 @@ function lhs() {
     f.seek(0)
     f.write(f'\n{alias_line}\n')
 
-
-
   click.echo("LHS has been initialized.")
 
 
@@ -94,11 +92,32 @@ def alias(args):
     click.echo("Not nice")
 
 @cli.command()
-@click.option('-v', '--verbose', is_flag=True)
-def list(verbose):
-  """List all aliases."""
-  print(f"List aliases with verbose={verbose}")
+@click.argument('args', nargs=-1)
+def list(args):
+  """List aliases/tools."""
 
+  if len(args) == 0:
+    click.echo("Usage: lhs list [aliases|tools] [--verbose/-v]")
+    return
+
+  verbose = False
+  list_aliases = False
+  list_tools = False
+  for arg in args:
+    if arg == "-v" or arg == "--verbose":
+      verbose = True
+    elif arg == "aliases":
+      list_aliases = True
+    elif arg == "tools":
+      list_tools = True
+    else:
+      click.echo(f"Unknown argument: {arg}")
+      click.echo("Usage: lhs list [aliases|tools] [--verbose/-v]")
+      return
+
+  print(f"List aliases: {list_aliases}")
+  print(f"List tools: {list_tools}")
+  print(f"Verbose: {verbose}")
 
 
 if __name__ == '__main__':

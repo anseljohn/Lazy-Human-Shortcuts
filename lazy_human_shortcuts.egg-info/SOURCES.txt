@@ -7,6 +7,7 @@ lazy_human_shortcuts.egg-info/requires.txt
 lazy_human_shortcuts.egg-info/top_level.txt
 lhs/__init__.py
 lhs/alias.py
+lhs/alias_manager.py
 lhs/main.py
 lhs/paths.py
 lhs/semantics.py
