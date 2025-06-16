@@ -1,2 +1,1 @@
-# LHS has no external dependencies
-# All functionality uses Python standard library 
+click>=8.0.0 
