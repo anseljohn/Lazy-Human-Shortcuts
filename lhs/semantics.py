@@ -37,3 +37,38 @@ Description:"""
     text = response.choices[0].message.content.strip()
     # Just in case, take the first line or two words
     return " ".join(text.split())
+
+def describe_tool(filepath):
+    with open(filepath, "r", encoding="utf-8") as f:
+        code = f.read()
+
+    prompt = f"""
+You are an intelligent code analysis assistant.
+
+Analyze the following Python script and do the following:
+1. Describe in 1–2 sentences what the script does.
+2. Determine if and how it can be run from the command line.
+3. If it uses argparse or click, list the available flags and what they do.
+4. If possible, show a sample command to run it.
+
+Python script:
+{code}
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.3,
+        max_tokens=600,
+    )
+
+    return response.choices[0].message.content.strip()
+
+# Example usage
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) < 2:
+        print("Usage: python smart_usage.py <file.py>")
+        exit(1)
+
+    print(describe_tool(sys.argv[1]))

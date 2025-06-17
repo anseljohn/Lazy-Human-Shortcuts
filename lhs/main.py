@@ -93,6 +93,12 @@ def alias(args):
 
 @cli.command()
 @click.argument('args', nargs=-1)
+def tool(args):
+  """Find and build tools"""
+  click.echo(f"Tool: {args}")
+
+@cli.command()
+@click.argument('args', nargs=-1)
 def list(args):
   """List aliases/tools."""
 
