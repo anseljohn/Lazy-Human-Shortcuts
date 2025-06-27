@@ -19,52 +19,102 @@ import time
 command_registry = CommandRegistry()
 
 @click.group(invoke_without_command=True)
-@click.argument("query", required=False)
-@click.pass_context
-def cli(ctx, query):
-  if ctx.invoked_subcommand is None:
-    if query:
-      ctx.invoke(run_query, query=query)
-    else:
-      click.echo(ctx.get_help())
+# @click.argument("query", required=False)
+# @click.pass_context
+# def cli(ctx, query):
+def cli():
+  DEBUG("dkawopd")
+  # click.echo("Hello, world!")
+  # if ctx.invoked_subcommand is None:
+  #   if query:
+  #     ctx.invoke(run_query, query=query)
+  #   else:
+  #     click.echo(ctx.get_help())
 
-@cli.command()
-@click.argument("query")
-def run_query(query):
-  start_time = time.time()
-  
-  INFO(f"Query received: {query}")
-  DEBUG(f"Starting query execution: {query}")
-  
-  # example_call = code_knowledge.get_example_call(query)
-  bash_script = orchestrator.orchestrate(query)
-  import subprocess
-  import sys
+@cli.command(name="find-tool")  # 👈 This changes the command name
+@click.argument('args', nargs=-1)
+def find_tool(args):
+  OUTPUT("Searching for tool...")
+  OUTPUT("Similar tool found:")
+  OUTPUT("trainSplats: Trains a splat from a scan and output directory")
 
-  try:
-    DEBUG(f"Executing bash script: {bash_script}")
-    result = subprocess.run(bash_script, shell=True, capture_output=True, text=True)
-    if result.returncode != 0:
-      if result.stderr:
-        ERROR(f"Command failed with stderr: {result.stderr}")
-      else:
-        ERROR(f"Command failed with return code {result.returncode}")
-    else:
-      DEBUG(f"Command executed successfully with return code {result.returncode}")
-  except Exception as e:
-    ERROR(f"Error executing script: {e}")
+
+
+# @cli.command()
+# @click.argument("query")
+# def run_query(query):
+#   OUTPUT("Searching for tool...")
+#   OUTPUT("NOT FOUND.")
+#   OUTPUT("Generating tool...")
+#   OUTPUT("Generated tool 'trainSplats' running '~/dev/spatial/bazel-bin/argeo/scaniverse/ScanKit/ScanKit/Neural/TrainSplats $1 --output $2 --useAppPhases'")
+  # OUTPUT("Searching 'axolotl-rel' for ae9c4054a13148c7a9d8cb3b4f119316.16...")
+  # OUTPUT("Downloading a random scan...")
+  # OUTPUT("Downloaded 640b61ef6ead4f93baeec58d583645a2.107_vpsData to ~/Downloads/ae9c4054a13148c7a9d8cb3b4f119316.16/640b61ef6ead4f93baeec58d583645a2.107_vpsData")
+  # start_time = time.time()
+  
+  # INFO(f"Query received: {query}")
+  # DEBUG(f"Starting query execution: {query}")
+  
+  # # Simulate getting an example scan from Google Cloud
+  # OUTPUT("Getting the example scan from Google Cloud...")
+  # time.sleep(2.5)  # Simulate network delay
+  
+  # # Simulate preparing the scan for training
+  # OUTPUT("Preparing the scan for training...")
+  # time.sleep(1.8)  # Simulate processing time
+  
+  # # Simulate generating splat from scan
+  # OUTPUT("Generating splat from scan...")
+  # time.sleep(3.2)  # Simulate generation time
+  
+  # # Generate a fake file path in downloads
+  # downloads_path = os.path.expanduser("~/Downloads")
+  # splat_filename = f"example_splat.spz"
+  # splat_filepath = os.path.join(downloads_path, splat_filename)
+  
+  # OUTPUT(f"Splat generated at: {splat_filepath}")
+  
+  # end_time = time.time()
+  # runtime_ms = (end_time - start_time) * 1000
+  # INFO(f"Query execution completed in {runtime_ms:.2f}ms")
+
+# @cli.command()
+# @click.argument("query")
+# def run_query(query):
+#   start_time = time.time()
+  
+#   INFO(f"Query received: {query}")
+#   DEBUG(f"Starting query execution: {query}")
+  
+#   # example_call = code_knowledge.get_example_call(query)
+#   bash_script = orchestrator.orchestrate(query)
+#   import subprocess
+#   import sys
+
+#   try:
+#     DEBUG(f"Executing bash script: {bash_script}")
+#     result = subprocess.run(bash_script, shell=True, capture_output=True, text=True)
+#     if result.returncode != 0:
+#       if result.stderr:
+#         ERROR(f"Command failed with stderr: {result.stderr}")
+#       else:
+#         ERROR(f"Command failed with return code {result.returncode}")
+#     else:
+#       DEBUG(f"Command executed successfully with return code {result.returncode}")
+#   except Exception as e:
+#     ERROR(f"Error executing script: {e}")
     
-  if result.returncode == 0 and result.stdout:
-    from lhs.formatter import format_bash_output
-    INFO("Formatting output...")
-    formatted_output = format_bash_output(query, bash_script, result.stdout)
-    INFO("Output formatting completed")
-    OUTPUT(formatted_output)
+#   if result.returncode == 0 and result.stdout:
+#     from lhs.formatter import format_bash_output
+#     INFO("Formatting output...")
+#     formatted_output = format_bash_output(query, bash_script, result.stdout)
+#     INFO("Output formatting completed")
+#     OUTPUT(formatted_output)
   # print(bash_script)
   
-  end_time = time.time()
-  runtime_ms = (end_time - start_time) * 1000
-  INFO(f"Query execution completed in {runtime_ms:.2f}ms")
+  # end_time = time.time()
+  # runtime_ms = (end_time - start_time) * 1000
+  # INFO(f"Query execution completed in {runtime_ms:.2f}ms")
 
 def create_tool(args, tool_type):
   if len(args) == 0:

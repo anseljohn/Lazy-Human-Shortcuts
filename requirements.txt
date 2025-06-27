@@ -1,1 +1,6 @@
-click>=8.0.0 
+click==8.2.1
+numpy==2.3.0
+openai==1.88.0
+scikit_learn==1.7.0
+setuptools==80.1.0
+tiktoken==0.9.0
