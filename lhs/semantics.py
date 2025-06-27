@@ -43,13 +43,24 @@ def describe_tool(filepath):
         code = f.read()
 
     prompt = f"""
-You are an intelligent code analysis assistant.
+Create a concise and accurate description of a given piece of code, focusing on its functionality, purpose, and key components. Avoid detailing unnecessary implementation specifics unless they are crucial for understanding the main function.
 
-Analyze the following Python script and do the following:
-1. Describe in 1–2 sentences what the script does.
-2. Determine if and how it can be run from the command line.
-3. If it uses argparse or click, list the available flags and what they do.
-4. If possible, show a sample command to run it.
+# Steps
+
+1. **Analyze the Code**: Review the logic, data structures, and overall flow to understand the main function and any supporting details crucial for its operation.
+2. **Identify Key Components**: Note main variables, functions, or classes that play a key role in the code's operation.
+3. **Determine Purpose and Functionality**: Consider what the overall intent of the code is and how it achieves it through the identified components.
+4. **Construct Description**: Formulate a brief paragraph describing the purpose and core functionality, highlighting the key components and their role.
+
+# Output Format
+
+A short paragraph detailing the code's functionality and purpose, between 1 and 2 sentences long.
+
+# Examples
+
+**Input**: A function that calculates the factorial of a number using recursion.
+
+**Output**: The code defines a recursive function to calculate the factorial of a given non-negative integer.
 
 Python script:
 {code}
