@@ -19,35 +19,13 @@ Performs three traversals:
 - Enriches the CKG with global context
 - Global context is added by looking at the node, its parent, and its local context
 - This captures broader semantic understanding from repo-level intent down to specific code regions
-
-def parse_folder(folder_path):
-    folder_node = CodeNode(...)
-    
-    for file in folder_path.files:
-        file_node = CodeNode(...)
-        folder_node.children.append(file_node)
-        file_node.parents.append(folder_node)
-        
-        for fn in extract_functions(file):
-            fn_node = CodeNode(...)
-            file_node.children.append(fn_node)
-            fn_node.parents.append(file_node)
-
-    for subfolder in folder_path.subdirs:
-        child_folder_node = parse_folder(subfolder)
-        folder_node.children.append(child_folder_node)
-        child_folder_node.parents.append(folder_node)
-
-    return folder_node
-
 '''
 
-from pathlib import Path
 from ckg_node import CKGNode
 from collections import deque
-
+from file_utils import infer_file_type
+from pathlib import Path
 import os
-        
 
 class CKGBuilder:
   def __init__(self, repo_path):
@@ -68,6 +46,9 @@ class CKGBuilder:
           type = "file",
           name = os.path.basename(item_path))
 
+        file_type = infer_file_type(item_path)
+        # print(f"uid: {file_node.uid}, file type: {file_type}")
+
         file_node.owner = dir_node 
         dir_node.children.append(file_node)
       elif os.path.isdir(item_path):
@@ -80,6 +61,6 @@ class CKGBuilder:
   def build(self):
     repo_node = self.traverse(self.repo_path)
 
-    for child in repo_node.children:
-      if child.type == "folder":
-        print(child.children)
+    # for child in repo_node.children:
+    #   if child.type == "folder":
+    #     print(child.children)
