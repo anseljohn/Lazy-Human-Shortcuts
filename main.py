@@ -1,8 +1,8 @@
 import os
 import sys
 from re import A
-from CKGNode import CKGNode
-from build_ckg import build_ckg
+from ckg_node import CKGNode
+from ckg_builder import CKGBuilder
 
 def is_text_file(file_path):
   """
@@ -391,7 +391,9 @@ def main():
     # functions = get_functions_from_file(repo_name, file_path)
     # print(functions[0][0])
     # print(functions[0][1])
-    build_ckg(repo_path)
+    # build_ckg(repo_path)
+    builder = CKGBuilder(repo_path)
+    builder.build()
   except Exception as e:
     print(f"Error: {e}")
 
