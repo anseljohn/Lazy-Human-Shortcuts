@@ -1,3 +1,25 @@
+'''
+Builds a code knowledge graph (CKG) from a repository.
+
+Performs three traversals:
+
+1. Breadth first traversal of the repository
+- Adds nodes to the base CKG
+- Nodes consist of a function, file, or directory with bidirectional links to
+  their parent and children
+- The root node is the repository
+- A local context is added to leaf nodes using the contents of 
+  the file or function body
+
+2. Depth first traversal of the CKG (non-leaf local context propagation)
+- Adds local context to the non-leaf nodes
+- Local context is added by looking at the local context of the node's children
+
+3. Breadth first traversal of the CKG (global context propagation)
+- Enriches the CKG with global context
+- Global context is added by looking at the node, its parent, and its local context
+- This captures broader semantic understanding from repo-level intent down to specific code regions
+'''
 
 from CKGNode import CKGNode
 from collections import deque
