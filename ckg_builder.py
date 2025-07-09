@@ -22,6 +22,7 @@ Performs three traversals:
 '''
 
 from ckg_node import CKGNode
+from code_parser import get_functions_from_file
 from collections import deque
 from file_utils import infer_file_type
 from pathlib import Path
@@ -47,7 +48,9 @@ class CKGBuilder:
           name = os.path.basename(item_path))
 
         file_type = infer_file_type(item_path)
-        # print(f"uid: {file_node.uid}, file type: {file_type}")
+        if file_type == "code":
+          print(f"Code file: {file_node.uid}")
+          functions = get_functions_from_file(self.repo_name, item_path)
 
         file_node.owner = dir_node 
         dir_node.children.append(file_node)
