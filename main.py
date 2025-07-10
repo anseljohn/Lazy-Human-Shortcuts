@@ -13,7 +13,7 @@ def main():
 
   try:
     builder = CKGBuilder(repo_path)
-    builder.build()
+    builder.build_ckg()
   except Exception as e:
     print(f"Error: {e}")
 

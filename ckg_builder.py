@@ -3,7 +3,7 @@ Builds a code knowledge graph (CKG) from a repository.
 
 Performs three traversals:
 
-1. Breadth first traversal of the repository
+1. Initial traversal of the repository
 - Adds nodes to the base CKG
 - Nodes consist of a function, file, or directory with bidirectional links to
   their parent and children
@@ -20,47 +20,73 @@ Performs three traversals:
 - Global context is added by looking at the node, its parent, and its local context
 - This captures broader semantic understanding from repo-level intent down to specific code regions
 '''
+import os
+from pathlib import Path
+from typing import Union
 
 from ckg_node import CKGNode
 from code_parser import get_functions
-from collections import deque
 from file_utils import infer_file_type
-from pathlib import Path
-import os
+
 
 class CKGBuilder:
-  def __init__(self, repo_path):
+  def __init__(self, repo_path: Union[str, Path]):
+    if isinstance(repo_path, str):
+      repo_path = Path(repo_path)
+
     self.repo_name = os.path.basename(repo_path)
     self.repo_path = repo_path
 
-  def traverse(self, path: str) -> CKGNode:
+
+  def build_function_node(self, parent_node, function_name, function_code):
+    return CKGNode(
+      uid = f"{parent_node.uid}::{function_name}",
+      type = "function",
+      name = function_name,
+      content = function_code
+    )
+
+
+  def build_file_node(self, file_path: Path):
+    file_node = CKGNode(
+      uid = f"{self.repo_name}/{os.path.relpath(file_path, self.repo_path)}",
+      type = "file",
+      name = os.path.basename(file_path))
+
+    if infer_file_type(file_path) == "code":
+      functions = get_functions(file_path)
+      for function in functions:
+        function_node = self.build_function_node(file_node, function[0], function[1])
+        file_node.add_child(function_node)
+
+    return file_node
+
+
+  def build_folder_node(self, path: Path) -> CKGNode:
     dir_node = CKGNode(
       uid = f"{self.repo_name}/{os.path.relpath(path, self.repo_path)}",
       type = "folder",
       name = os.path.basename(path))
-    
+
     for item in os.listdir(path):
-      item_path = os.path.join(path, item)
-      if os.path.isfile(item_path):
-        file_node = CKGNode(
-          uid = f"{self.repo_name}/{os.path.relpath(item_path, self.repo_path)}",
-          type = "file",
-          name = os.path.basename(item_path))
-
-        file_type = infer_file_type(item_path)
-        if file_type == "code":
-          # print(f"Code file: {file_node.uid}")
-          # functions = get_functions_from_file(self.repo_name, item_path)
-          functions = get_functions(item_path)
-
-        file_node.owner = dir_node 
-        dir_node.children.append(file_node)
-      elif os.path.isdir(item_path):
-        child_folder_node = self.traverse(item_path)
-        child_folder_node.owner = dir_node
-        dir_node.children.append(child_folder_node)
+      item_node = self.build_node(path.joinpath(item))
+      dir_node.add_child(item_node)
 
     return dir_node
 
-  def build(self):
-    repo_node = self.traverse(self.repo_path)
+
+  def build_node(self, path: Path) -> CKGNode:
+    if path.is_file():
+      return self.build_file_node(path)
+    elif path.is_dir():
+      return self.build_folder_node(path)
+    else:
+      raise ValueError(f"Invalid path: {path}")
+
+
+  def build_ckg(self):
+    repo_node = self.build_node(self.repo_path)
+    repo_node.uid = self.repo_name
+    repo_node.type = "repo"
+
+    return repo_node
