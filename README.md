@@ -1,74 +1,21 @@
-# LHS - Lazy Human Shortcuts
+# Code Ingestion Engine Pipeline
 
-A simple command-line tool to manage zsh aliases permanently.
+1. Code Analysis
 
-## Installation
+    Function by function semantic description.
 
-### Method 1: Using the install script
-```bash
-./install.sh
-```
+2. File Analysis
 
-### Method 2: Manual installation with pip
-```bash
-pip install -e .
-```
+    File by file semantic description using code analysis context.
 
-### Method 3: Install from source
-```bash
-python setup.py install
-```
+3. Folder Analysis
 
-## Usage
+    Folder by folder semantic description using file analysis context. 
 
-```bash
-lhs alias <name> does <command>
-lhs list
-lhs remove <alias>
-```
+4. Repo Analysis
 
-### Examples
+    Repo semantic description using folder analysis context.
 
-```bash
-# Add an alias
-lhs alias hello does "echo 'hello world'"
+5. Top Down Enrichment
 
-# List all aliases
-lhs list
-
-# Remove an alias
-lhs remove hello
-```
-
-## How it works
-
-- Creates a `.lhs` directory in your home folder
-- Stores all aliases in `~/.lhs/aliases`
-- Automatically adds a source line to your `~/.zshrc` file
-- Manages aliases without cluttering your `.zshrc`
-
-## Development
-
-### Project structure
-```
-lhs/
-├── python/
-│   ├── __init__.py
-│   └── main.py
-├── lhs (executable script)
-├── setup.py
-├── requirements.txt
-├── install.sh
-└── README.md
-```
-
-### Testing locally
-```bash
-# Direct execution during development
-./lhs alias test does "echo test"
-./lhs list
-./lhs remove test
-
-# Or using Python module
-PYTHONPATH=python python -m main alias test does "echo test"
-``` 
+    Travel top down applying parent context for context enrichment.
